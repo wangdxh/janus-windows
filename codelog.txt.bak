@@ -1,0 +1,50 @@
+﻿janus_process_incoming_request
+  
+                           (janus_transport* plugin, janus_http_msg* transport, void *request_id, gboolean admin, json_t *message, json_error_t *error)  
+  gateway->incoming_request(&janus_http_transport, msg, msg, FALSE, root, &error);  
+  
+  janus_request *request = (janus_request *)g_malloc0(sizeof(janus_request));
+	request->transport = transport;  // janus_transport *plugin	
+	request->instance = instance;  msg
+	request->request_id = request_id;
+	request->message = message;
+  
+  create
+  	janus_session *session  malloc
+  	session->session_id = session_id; // new session_id
+		session->source = janus_request_new(request->transport, request->instance, NULL, FALSE, NULL);
+		g_hash_table_insert(sessions, janus_uint64_dup(session->session_id), session);
+		
+		request->transport->session_created(request->instance, session->session_id);
+				janus_http_session *session  malloc
+				session->events = g_async_queue_new();		
+				g_hash_table_insert(sessions, janus_uint64_dup(session_id), session);
+		
+  
+  attach:   
+  	janus_session *session = janus_session_find(session_id);
+  	janus_plugin *plugin_t = janus_plugin_find(plugin_text);
+  	  	
+  	janus_ice_handle *handle   malloc
+	  	handle->session = session; 
+			handle->handle_id = handle_id; // new  handle_id
+			handle->app = NULL;
+			handle->app_handle = NULL;
+	  g_hash_table_insert(session->ice_handles, janus_uint64_dup(handle->handle_id), handle);
+	  
+	  	  
+	  janus_plugin_session *session_handle  malloc
+	  	session_handle->gateway_handle = handle;
+	  	session_handle->plugin_handle = NULL;
+	  
+	  	plugin->create_session(session_handle, &error); // janus streaming .cpp
+	  		janus_streaming_session *session 	// malloc	  		
+	  		session->handle = session_handle;
+	  		session->mountpoint = NULL;	  		
+	  		session_handle->plugin_handle = session;	  		
+	  		g_hash_table_insert(sessions, session_handle, session);
+	  		
+	  
+	  	handle->app = plugin;                // ice handle
+			handle->app_handle = session_handle; // ice handle
+	  
